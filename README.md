@@ -26,14 +26,14 @@ cd /tmp/example_ws
 
 4. Generate colcon-lcov-result data
 ```
-./src/build.bash colconlcov
+./src/lcovissue/build.bash colconlcov
 firefox lcov/index.html
 ```
 
 5. Generate direct lcov data
 ```
-./src/build.bash baselcov
+./src/lcovissue/build.bash baselcov
 firefox baselcov/html/index.html
 ```
 
-Notic there is one extra line in the baselcov data showing `package_a` under the `install` directory.
+Notice there is one extra line in the baselcov data showing `package_a` under the `install` directory.

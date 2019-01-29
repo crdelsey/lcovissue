@@ -1,12 +1,13 @@
 #!/bin/bash
 
-if [ ! -d src/package_a ]; then
+if [ ! -d src/lcovissue ]; then
   echo "Please run this script from the root of your workspace."
   echo "Expected directory hierarchy is:"
   echo "example_ws"
   echo " - src"
-  echo " - - package_a"
-  echo " - - package_b"
+  echo " - - lcovissue"
+  echo " - - - package_a"
+  echo " - - - package_b"
   exit 1
 fi
 
