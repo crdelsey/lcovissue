@@ -15,7 +15,7 @@ mkdir -p example_ws/src
 2. Clone this repo to the src directory
 ```
 cd example_ws/src
-git clone *TBD*
+git clone https://github.com/crdelsey/lcovissue.git
 ```
 
 3. Source your ROS 2 environment and go to the root of the workspace
