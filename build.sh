@@ -15,7 +15,7 @@ set -e
 for opt in "$@" ; do
   case "$opt" in
     clean)
-      rm -rf install build log lcov
+      rm -rf install build log lcov baselcov
       ;;
     colconlcov)
       colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS='--coverage' -DCMAKE_C_FLAGS='--coverage'
@@ -28,13 +28,15 @@ for opt in "$@" ; do
       ;;
     baselcov)
       colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON
-      LCOVDIR=`mktemp -d /tmp/lcovoutXXXX`
+      LCOVDIR=baselcov
+      mkdir $LCOVDIR
+      PWD=`pwd`
       lcov -c  --initial --rc lcov_branch_coverage=1 --directory build --output-file ${LCOVDIR}/initialcoverage.info
       colcon test
       lcov -c --rc lcov_branch_coverage=1 --directory build --output-file ${LCOVDIR}/testcoverage.info
       lcov -a ${LCOVDIR}/initialcoverage.info -a ${LCOVDIR}/testcoverage.info --rc lcov_branch_coverage=1 --o ${LCOVDIR}/fullcoverage.info
-      #lcov -e ${LCOVDIR}/fullcoverage.info '*/example_ws/*' --rc lcov_branch_coverage=1 --output-file ${LCOVDIR}/projectcoverage.info
-      genhtml ${LCOVDIR}/fullcoverage.info --output-directory ${LCOVDIR}/html --branch-coverage
+      lcov -e ${LCOVDIR}/fullcoverage.info "${PWD}/*" --rc lcov_branch_coverage=1 --output-file ${LCOVDIR}/projectcoverage.info
+      genhtml ${LCOVDIR}/projectcoverage.info --output-directory ${LCOVDIR}/html --branch-coverage -p ${PWD}
       echo
       echo "Coverage results are in ${LCOVDIR}/html"
       ;;
