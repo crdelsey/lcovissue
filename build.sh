@@ -10,16 +10,33 @@ if [ ! -d src/package_a ]; then
   exit 1
 fi
 
+set -e
+
 for opt in "$@" ; do
   case "$opt" in
     clean)
-      rm -rf install build log
+      rm -rf install build log lcov
       ;;
     colconlcov)
       colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS='--coverage' -DCMAKE_C_FLAGS='--coverage'
+      colcon lcov-result --zero-counters
+      colcon lcov-result --initial
+      colcon test
+      colcon lcov-result
+      echo
+      echo "Coverage results are in lcov"
       ;;
     baselcov)
       colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=ON
+      LCOVDIR=`mktemp -d /tmp/lcovoutXXXX`
+      lcov -c  --initial --rc lcov_branch_coverage=1 --directory build --output-file ${LCOVDIR}/initialcoverage.info
+      colcon test
+      lcov -c --rc lcov_branch_coverage=1 --directory build --output-file ${LCOVDIR}/testcoverage.info
+      lcov -a ${LCOVDIR}/initialcoverage.info -a ${LCOVDIR}/testcoverage.info --rc lcov_branch_coverage=1 --o ${LCOVDIR}/fullcoverage.info
+      #lcov -e ${LCOVDIR}/fullcoverage.info '*/example_ws/*' --rc lcov_branch_coverage=1 --output-file ${LCOVDIR}/projectcoverage.info
+      genhtml ${LCOVDIR}/fullcoverage.info --output-directory ${LCOVDIR}/html --branch-coverage
+      echo
+      echo "Coverage results are in ${LCOVDIR}/html"
       ;;
   esac
 done
