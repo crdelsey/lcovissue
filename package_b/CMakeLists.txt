@@ -16,22 +16,9 @@ include_directories(
   include
 )
 
-add_executable(${PROJECT_NAME}
-  src/main.cpp
-)
-ament_target_dependencies(${PROJECT_NAME}
-  package_a
-)
-
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
   add_subdirectory(test)
 endif()
-
-install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib/${PROJECT_NAME}
-)
 
 ament_package()

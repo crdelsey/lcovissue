@@ -1,0 +1,1 @@
+ament_add_gtest(test_PackageA test_PackageA.cpp)
